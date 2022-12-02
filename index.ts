@@ -217,7 +217,7 @@ function getMiddlewareFunctionsFromOptions(
   return result;
 }
 
-export const helmet: Helmet = Object.assign(
+const helmetFn: Helmet = Object.assign(
   function helmet(options: Readonly<HelmetOptions> = {}) {
     if (options.constructor?.name === "IncomingMessage") {
       throw new Error(
@@ -269,11 +269,12 @@ export const helmet: Helmet = Object.assign(
   }
 );
 
-export default helmet;
+export const helmet = helmetFn
+export default helmetFn;
 
 // !helmet-start-of-commonjs-exports
-exports = helmet;
-module.exports = helmet;
+exports = helmetFn;
+module.exports = helmetFn;
 // !helmet-end-of-commonjs-exports
 
 // !helmet-start-of-esm-exports
