@@ -33,22 +33,27 @@ import xPermittedCrossDomainPolicies, {
 import xPoweredBy from "./middlewares/x-powered-by/index.js";
 import xXssProtection from "./middlewares/x-xss-protection/index.js";
 
-export interface HelmetOptions {
-  contentSecurityPolicy?: ContentSecurityPolicyOptions | boolean;
-  crossOriginEmbedderPolicy?: CrossOriginEmbedderPolicyOptions | boolean;
-  crossOriginOpenerPolicy?: CrossOriginOpenerPolicyOptions | boolean;
-  crossOriginResourcePolicy?: CrossOriginResourcePolicyOptions | boolean;
-  dnsPrefetchControl?: XDnsPrefetchControlOptions | boolean;
-  expectCt?: ExpectCtOptions | boolean;
-  frameguard?: XFrameOptionsOptions | boolean;
-  hidePoweredBy?: boolean;
-  hsts?: StrictTransportSecurityOptions | boolean;
-  ieNoOpen?: boolean;
-  noSniff?: boolean;
-  originAgentCluster?: boolean;
-  permittedCrossDomainPolicies?: XPermittedCrossDomainPoliciesOptions | boolean;
-  referrerPolicy?: ReferrerPolicyOptions | boolean;
-  xssFilter?: boolean;
+declare namespace helmet {
+  export interface HelmetOptions {
+    contentSecurityPolicy?: ContentSecurityPolicyOptions | boolean;
+    crossOriginEmbedderPolicy?: CrossOriginEmbedderPolicyOptions | boolean;
+    crossOriginOpenerPolicy?: CrossOriginOpenerPolicyOptions | boolean;
+    crossOriginResourcePolicy?: CrossOriginResourcePolicyOptions | boolean;
+    dnsPrefetchControl?: XDnsPrefetchControlOptions | boolean;
+    expectCt?: ExpectCtOptions | boolean;
+    frameguard?: XFrameOptionsOptions | boolean;
+    hidePoweredBy?: boolean;
+    hsts?: StrictTransportSecurityOptions | boolean;
+    ieNoOpen?: boolean;
+    noSniff?: boolean;
+    originAgentCluster?: boolean;
+    permittedCrossDomainPolicies?: XPermittedCrossDomainPoliciesOptions | boolean;
+    referrerPolicy?: ReferrerPolicyOptions | boolean;
+    xssFilter?: boolean;
+  }
+  
+  export const helmet: Helmet
+  export { helmet as default }
 }
 
 interface MiddlewareFunction {
@@ -60,7 +65,7 @@ interface MiddlewareFunction {
 }
 
 interface Helmet {
-  (options?: Readonly<HelmetOptions>): (
+  (options?: Readonly<helmet.HelmetOptions>): (
     req: IncomingMessage,
     res: ServerResponse,
     next: (err?: unknown) => void
@@ -112,7 +117,7 @@ function getArgs<T>(
 }
 
 function getMiddlewareFunctionsFromOptions(
-  options: Readonly<HelmetOptions>
+  options: Readonly<helmet.HelmetOptions>
 ): MiddlewareFunction[] {
   const result: MiddlewareFunction[] = [];
 
@@ -218,7 +223,7 @@ function getMiddlewareFunctionsFromOptions(
 }
 
 const helmet: Helmet = Object.assign(
-  function helmet(options: Readonly<HelmetOptions> = {}) {
+  function helmet(options: Readonly<helmet.HelmetOptions> = {}) {
     if (options.constructor?.name === "IncomingMessage") {
       throw new Error(
         "It appears you have done something like `app.use(helmet)`, but it should be `app.use(helmet())`."
@@ -269,7 +274,9 @@ const helmet: Helmet = Object.assign(
   }
 );
 
+
 // !helmet-start-of-commonjs-exports
+export = helmet
 exports = helmet;
 module.exports = helmet;
 module.exports.default = helmet
