@@ -269,7 +269,7 @@ const helmetFn: Helmet = Object.assign(
   }
 );
 
-export const helmet = helmetFn
+export const helmet = helmetFn;
 export default helmetFn;
 
 // !helmet-start-of-commonjs-exports
