@@ -88,9 +88,9 @@ function getArgs<T>(
   middlewareConfig: Readonly<
     | { takesOptions?: true }
     | {
-        name: string;
-        takesOptions: false;
-      }
+      name: string;
+      takesOptions: false;
+    }
   > = {}
 ): null | [] | [T] {
   switch (option) {
@@ -217,59 +217,56 @@ function getMiddlewareFunctionsFromOptions(
   return result;
 }
 
-const helmet: Helmet = Object.assign(
-  function helmet(options: Readonly<HelmetOptions> = {}) {
-    if (options.constructor?.name === "IncomingMessage") {
-      throw new Error(
-        "It appears you have done something like `app.use(helmet)`, but it should be `app.use(helmet())`."
-      );
-    }
-
-    const middlewareFunctions = getMiddlewareFunctionsFromOptions(options);
-
-    return function helmetMiddleware(
-      req: IncomingMessage,
-      res: ServerResponse,
-      next: (err?: unknown) => void
-    ): void {
-      let middlewareIndex = 0;
-
-      (function internalNext(err?: unknown) {
-        if (err) {
-          next(err);
-          return;
-        }
-
-        const middlewareFunction = middlewareFunctions[middlewareIndex];
-        if (middlewareFunction) {
-          middlewareIndex++;
-          middlewareFunction(req, res, internalNext);
-        } else {
-          next();
-        }
-      })();
-    };
-  },
-  {
-    contentSecurityPolicy,
-    crossOriginEmbedderPolicy,
-    crossOriginOpenerPolicy,
-    crossOriginResourcePolicy,
-    dnsPrefetchControl: xDnsPrefetchControl,
-    expectCt,
-    frameguard: xFrameOptions,
-    hidePoweredBy: xPoweredBy,
-    hsts: strictTransportSecurity,
-    ieNoOpen: xDownloadOptions,
-    noSniff: xContentTypeOptions,
-    originAgentCluster,
-    permittedCrossDomainPolicies: xPermittedCrossDomainPolicies,
-    referrerPolicy,
-    xssFilter: xXssProtection,
+const helmet: Helmet = function helmet(options: Readonly<HelmetOptions> = {}) {
+  if (options.constructor?.name === "IncomingMessage") {
+    throw new Error(
+      "It appears you have done something like `app.use(helmet)`, but it should be `app.use(helmet())`."
+    );
   }
-);
 
-export default helmet;
+  const middlewareFunctions = getMiddlewareFunctionsFromOptions(options);
+
+  return function helmetMiddleware(
+    req: IncomingMessage,
+    res: ServerResponse,
+    next: (err?: unknown) => void
+  ): void {
+    let middlewareIndex = 0;
+
+    (function internalNext(err?: unknown) {
+      if (err) {
+        next(err);
+        return;
+      }
+
+      const middlewareFunction = middlewareFunctions[middlewareIndex];
+      if (middlewareFunction) {
+        middlewareIndex++;
+        middlewareFunction(req, res, internalNext);
+      } else {
+        next();
+      }
+    })();
+  } as Helmet;
+}
+
+Object.assign(helmet, {
+  contentSecurityPolicy,
+  crossOriginEmbedderPolicy,
+  crossOriginOpenerPolicy,
+  crossOriginResourcePolicy,
+  dnsPrefetchControl: xDnsPrefetchControl,
+  expectCt,
+  frameguard: xFrameOptions,
+  hidePoweredBy: xPoweredBy,
+  hsts: strictTransportSecurity,
+  ieNoOpen: xDownloadOptions,
+  noSniff: xContentTypeOptions,
+  originAgentCluster,
+  permittedCrossDomainPolicies: xPermittedCrossDomainPolicies,
+  referrerPolicy,
+  xssFilter: xXssProtection,
+})
 
 // !helmet-start-of-commonjs-exports
 exports = helmet;
@@ -279,6 +276,8 @@ module.exports.helmet = helmet
 // !helmet-end-of-commonjs-exports
 
 // !helmet-start-of-esm-exports
+export default helmet;
+
 export {
   contentSecurityPolicy,
   crossOriginEmbedderPolicy,
