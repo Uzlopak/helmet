@@ -217,7 +217,7 @@ function getMiddlewareFunctionsFromOptions(
   return result;
 }
 
-const helmet: Helmet = Object.assign(
+export const helmet: Helmet = Object.assign(
   function helmet(options: Readonly<HelmetOptions> = {}) {
     if (options.constructor?.name === "IncomingMessage") {
       throw new Error(

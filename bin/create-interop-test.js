@@ -12,9 +12,23 @@ const rootPath = path.join(path.dirname(thisPath), "..");
 const testPath = path.join(rootPath, 'test_interop');
 
 const indexTs = `import helmet from 'helmet'
+import { helmet as namedHelmet} from 'helmet'
+import * as helmetStar from "helmet"
+const requiredHelmet = require('helmet')
+const requiredNamedHelmet = require('helmet').helmet
+const defaultNamedHelmet = require('helmet').default
+
 import { equal } from "assert"
 
-equal(typeof helmet, 'function')`
+equal(typeof helmet, 'function')
+equal(typeof namedHelmet, 'function')
+equal(typeof requiredHelmet, 'function')
+equal(typeof requiredNamedHelmet, 'function')
+equal(typeof defaultNamedHelmet, 'function')
+equal(typeof helmetStar, 'function')
+equal(typeof helmetStar.default, 'function')
+equal(typeof helmetStar.helmet, 'function')
+`
 
 const tsconfigJson = JSON.stringify({
   "compilerOptions": {
