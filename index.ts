@@ -274,6 +274,8 @@ export default helmet;
 // !helmet-start-of-commonjs-exports
 exports = helmet;
 module.exports = helmet;
+module.exports.default = helmet;
+module.exports.helmet = helmet;
 // !helmet-end-of-commonjs-exports
 
 // !helmet-start-of-esm-exports
